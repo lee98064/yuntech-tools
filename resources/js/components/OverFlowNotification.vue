@@ -170,7 +170,8 @@ export default {
         })
         .then(function (response) {
           if (response.data.success) {
-            var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${process.env.MIX_APP_URL}/linenotify&scope=notify&state=overflow`;
+            var domain = location.protocol + "//" + location.hostname;
+            var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}/linenotify&scope=notify&state=overflow`;
             location.href = url;
           }
         })
