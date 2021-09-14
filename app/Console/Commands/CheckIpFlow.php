@@ -46,10 +46,24 @@ class CheckIpFlow extends Command
         $linenotify = new LineNotifyService();
         foreach ($ips as $ip) {
             $flow = $ipflow->GetFlow($ip->ip);
-            $flow = $ipflow->humanFileSize($flow);
-            $message = "\nIP: {$ip->ip}\n使用流量: {$flow}";
-            $message = $linenotify->text_message($message, false);
-            $linenotify->send($message, $ip->linenotifytoken->token);
+            $flowhuman = $ipflow->humanFileSize($flow);
+
+            if (floatval($flow) > 10 && $ip->flow < 10) {
+                $message = "\n目前流量已超過10GB，您已被鎖卡!\nIP: {$ip->ip}\n今日使用流量: {$flowhuman}";
+            } elseif (floatval($flow) > 9 && $ip->flow < 9) {
+                $message = "\n目前流量已達9GB，請注意使用!\nIP: {$ip->ip}\n今日使用流量: {$flowhuman}";
+            } elseif (floatval($flow) > 8 && $ip->flow < 8) {
+                $message = "\n目前流量已達8GB，請注意使用!\nIP: {$ip->ip}\n今日使用流量: {$flowhuman}";
+            } elseif (floatval($flow) > 5 && $ip->flow < 5) {
+                $message = "\n目前流量已達5GB，請注意使用!\nIP: {$ip->ip}\n今日使用流量: {$flowhuman}";
+            }
+
+            $ip->flow = floatval($flow);
+            $ip->save();
+            if (isset($message)) {
+                $message = $linenotify->text_message($message, false);
+                $linenotify->send($message, $ip->linenotifytoken->token);
+            }
         }
         return 0;
     }
