@@ -12,8 +12,11 @@ import colors from 'vuetify/lib/util/colors'
 import App from './components/App'
 import 'vuetify/dist/vuetify.min.css'
 require('./bootstrap');
+window.WebNotify = require('./enable-push');
 
 window.Vue = require('vue').default;
+
+WebNotify.initSW();
 
 /**
  * The following block of code may be used to automatically register your

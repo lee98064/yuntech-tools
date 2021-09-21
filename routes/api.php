@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\OverFlowNotificationController;
 use App\Http\Controllers\API\LineNotifyController;
+use App\Http\Controllers\API\WebNotifyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,4 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 Route::resource('overflownotification', OverFlowNotificationController::class);
 Route::post('linenotify', [LineNotifyController::class, 'index']);
+Route::post('webnotify', [WebNotifyController::class, 'store']);
