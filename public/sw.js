@@ -28,9 +28,9 @@ self.addEventListener('activate', event => {
 });
 
 // fetch
-self.addEventListener('fetch', event => {
-    console.log('now fetch!',event);
-});
+// self.addEventListener('fetch', event => {
+//     console.log('now fetch!',event);
+// });
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();

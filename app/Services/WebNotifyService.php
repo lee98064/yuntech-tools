@@ -14,6 +14,13 @@ class WebNotifyService extends Notification
 
     use Queueable;
 
+    public function __construct($title, $body, $action)
+    {
+        $this->title = $title;
+        $this->body = $body;
+        $this->action = $action;
+    }
+
 
     public function via($notifiable)
     {
@@ -23,9 +30,9 @@ class WebNotifyService extends Notification
     public function toWebPush($notifiable, $notification)
     {
         return (new WebPushMessage)
-            ->title('訂閱成功')
+            ->title($this->title)
             // ->icon('/notification-icon.png')
-            ->body('您已成功啟用訂閱服務!')
-            ->action('開啟首頁', 'openHomepage');
+            ->body($this->body)
+            ->action($this->action[0], $this->action[1]);
     }
 }

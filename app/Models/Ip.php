@@ -11,17 +11,13 @@ class Ip extends Model
 
     protected $fillable = [
         'ip',
+        'linenotify',
+        'webnotify',
         'user_id',
-        'linenotifytoken_id',
     ];
 
     public function user()
     {
         return $this->belongsTo('App\Models\User');
-    }
-
-    public function linenotifytoken()
-    {
-        return $this->belongsTo('App\Models\LineNotifyToken');
     }
 }

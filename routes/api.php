@@ -32,5 +32,5 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 
 Route::resource('overflownotification', OverFlowNotificationController::class);
-Route::post('linenotify', [LineNotifyController::class, 'index']);
+Route::post('linenotify', [LineNotifyController::class, 'store']);
 Route::post('webnotify', [WebNotifyController::class, 'store']);

@@ -1,10 +1,11 @@
 <template>
   <div class="container">
-    <v-card class="mx-auto" max-width="344">
-      <v-card-title> LINE Notify提醒 </v-card-title>
+    <v-card class="mx-auto" max-width="500">
+      <v-card-title> 流量提醒 </v-card-title>
 
       <v-card-subtitle>
         請先檢查下方IP是否正確，以免無法正常接受到通知。
+        提供兩種通知方式，一種採用LINE的通知方式，另一種則是採用瀏覽器內建通知。
       </v-card-subtitle>
       <v-card-text>
         <v-text-field
@@ -19,6 +20,22 @@
           @blur="$v.ip.$touch()"
         ></v-text-field>
         <p class="mt-5">目前流量: {{ flower }}</p>
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" sm="6" md="6">
+            <v-switch
+              v-model="linenotify"
+              label="LINE Notify"
+              color="success"
+            ></v-switch>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-switch
+              v-model="webnotify"
+              label="瀏覽器通知"
+              color="warning"
+            ></v-switch>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -80,19 +97,16 @@
     </v-card>
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
-        <v-card-title class="text-h5"> 解除訂閱 </v-card-title>
+        <v-card-title class="text-h5"> 刪除IP </v-card-title>
         <v-card-text>
-          要解除的IP: {{ dialog_info.ip }}<br />
-          <div style="text-align: justify">
-            因為LINE設計原因，本網站解除後仍需自行前往LINE
-            Notify解除提醒，按下確定後，將會協助您導向至LINE頁面。
-          </div>
+          <div style="text-align: justify">確定要刪除此IP?</div>
+          要刪除的IP: {{ dialog_info.ip }}<br />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red" text @click="dialog = false"> 取消 </v-btn>
           <v-btn color="green darken-1" text @click="unauthorize()">
-            前往解除
+            刪除
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -118,6 +132,8 @@ export default {
       ip: "",
       ips: [],
       flower: "",
+      linenotify: true,
+      webnotify: true,
     };
   },
   created() {
@@ -167,14 +183,21 @@ export default {
       axios
         .post("/api/overflownotification", {
           ip: this.ip,
+          webnotify: this.webnotify,
+          linenotify: this.linenotify,
         })
-        .then(function (response) {
+        .then((response) => {
           if (response.data.success) {
-            var domain = location.protocol + "//" + location.hostname;
-            var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}/linenotify&scope=notify&state=overflow`;
-            location.href = url;
+            this.ips = response.data.ips;
           }
         })
+        // .then(function (response) {
+        //   if (response.data.success) {
+        //     var domain = location.protocol + "//" + location.hostname;
+        //     var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}/linenotify&scope=notify&state=overflow`;
+        //     location.href = url;
+        //   }
+        // })
         .catch(function (error) {
           console.log(error);
         });
@@ -192,7 +215,7 @@ export default {
           this.dialog = false;
           if (response.data.success) {
             this.ips = response.data.ips;
-            window.open("https://notify-bot.line.me/my/", "_blank");
+            // window.open("https://notify-bot.line.me/my/", "_blank");
           }
         })
         .catch(function (error) {

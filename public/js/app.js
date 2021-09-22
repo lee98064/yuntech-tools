@@ -2740,6 +2740,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2757,7 +2771,9 @@ __webpack_require__.r(__webpack_exports__);
       dialog_info: [],
       ip: "",
       ips: [],
-      flower: ""
+      flower: "",
+      linenotify: true,
+      webnotify: true
     };
   },
   created: function created() {
@@ -2807,19 +2823,28 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     authorize: function authorize() {
+      var _this3 = this;
+
       if (this.$v.$invalid) {
         return;
       }
 
       axios.post("/api/overflownotification", {
-        ip: this.ip
+        ip: this.ip,
+        webnotify: this.webnotify,
+        linenotify: this.linenotify
       }).then(function (response) {
         if (response.data.success) {
-          var domain = location.protocol + "//" + location.hostname;
-          var url = "https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=".concat("uHvwf8lyUrWkjg0V8Tm6wr", "&redirect_uri=").concat(domain, "/linenotify&scope=notify&state=overflow");
-          location.href = url;
+          _this3.ips = response.data.ips;
         }
-      })["catch"](function (error) {
+      }) // .then(function (response) {
+      //   if (response.data.success) {
+      //     var domain = location.protocol + "//" + location.hostname;
+      //     var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}/linenotify&scope=notify&state=overflow`;
+      //     location.href = url;
+      //   }
+      // })
+      ["catch"](function (error) {
         console.log(error);
       });
     },
@@ -2828,14 +2853,13 @@ __webpack_require__.r(__webpack_exports__);
       this.dialog = true;
     },
     unauthorize: function unauthorize() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios["delete"]("/api/overflownotification/".concat(this.dialog_info.id)).then(function (response) {
-        _this3.dialog = false;
+        _this4.dialog = false;
 
         if (response.data.success) {
-          _this3.ips = response.data.ips;
-          window.open("https://notify-bot.line.me/my/", "_blank");
+          _this4.ips = response.data.ips; // window.open("https://notify-bot.line.me/my/", "_blank");
         }
       })["catch"](function (error) {
         this.dialog = false;
@@ -2993,8 +3017,7 @@ module.exports = {
   },
   storePushSubscription: function storePushSubscription(pushSubscription) {
     var token = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-    axios.post('/api/webnotify', pushSubscription).then(function (res) {
-      console.log(res);
+    axios.post('/api/webnotify', pushSubscription).then(function (res) {// console.log(res)
     })["catch"](function (err) {
       console.log(err);
     });
@@ -40101,13 +40124,13 @@ var render = function() {
     [
       _c(
         "v-card",
-        { staticClass: "mx-auto", attrs: { "max-width": "344" } },
+        { staticClass: "mx-auto", attrs: { "max-width": "500" } },
         [
-          _c("v-card-title", [_vm._v(" LINE Notify提醒 ")]),
+          _c("v-card-title", [_vm._v(" 流量提醒 ")]),
           _vm._v(" "),
           _c("v-card-subtitle", [
             _vm._v(
-              "\n      請先檢查下方IP是否正確，以免無法正常接受到通知。\n    "
+              "\n      請先檢查下方IP是否正確，以免無法正常接受到通知。\n      提供兩種通知方式，一種採用LINE的通知方式，另一種則是採用瀏覽器內建通知。\n    "
             )
           ]),
           _vm._v(" "),
@@ -40142,7 +40165,50 @@ var render = function() {
               _vm._v(" "),
               _c("p", { staticClass: "mt-5" }, [
                 _vm._v("目前流量: " + _vm._s(_vm.flower))
-              ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-row",
+                { attrs: { justify: "center", "no-gutters": "" } },
+                [
+                  _c(
+                    "v-col",
+                    { attrs: { cols: "12", sm: "6", md: "6" } },
+                    [
+                      _c("v-switch", {
+                        attrs: { label: "LINE Notify", color: "success" },
+                        model: {
+                          value: _vm.linenotify,
+                          callback: function($$v) {
+                            _vm.linenotify = $$v
+                          },
+                          expression: "linenotify"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    { attrs: { cols: "12", sm: "6", md: "6" } },
+                    [
+                      _c("v-switch", {
+                        attrs: { label: "瀏覽器通知", color: "warning" },
+                        model: {
+                          value: _vm.webnotify,
+                          callback: function($$v) {
+                            _vm.webnotify = $$v
+                          },
+                          expression: "webnotify"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
             ],
             1
           ),
@@ -40296,18 +40362,15 @@ var render = function() {
             "v-card",
             [
               _c("v-card-title", { staticClass: "text-h5" }, [
-                _vm._v(" 解除訂閱 ")
+                _vm._v(" 刪除IP ")
               ]),
               _vm._v(" "),
               _c("v-card-text", [
-                _vm._v("\n        要解除的IP: " + _vm._s(_vm.dialog_info.ip)),
-                _c("br"),
-                _vm._v(" "),
                 _c("div", { staticStyle: { "text-align": "justify" } }, [
-                  _vm._v(
-                    "\n          因為LINE設計原因，本網站解除後仍需自行前往LINE\n          Notify解除提醒，按下確定後，將會協助您導向至LINE頁面。\n        "
-                  )
-                ])
+                  _vm._v("確定要刪除此IP?")
+                ]),
+                _vm._v("\n        要刪除的IP: " + _vm._s(_vm.dialog_info.ip)),
+                _c("br")
               ]),
               _vm._v(" "),
               _c(
@@ -40338,7 +40401,7 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("\n          前往解除\n        ")]
+                    [_vm._v("\n          刪除\n        ")]
                   )
                 ],
                 1

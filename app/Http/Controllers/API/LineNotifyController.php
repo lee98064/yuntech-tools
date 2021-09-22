@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Session;
 
 class LineNotifyController extends Controller
 {
+
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,30 +28,7 @@ class LineNotifyController extends Controller
      */
     public function index(Request $request)
     {
-        $linenotify = new LineNotifyService();
-
-        $linenotifytoken = [
-            'type' => $request->state,
-            'token' => $linenotify->get_access_tooken($request->code),
-            'user_id' => Auth::user()->id
-        ];
-
-        $linenotifytoken = LineNotifyToken::create($linenotifytoken);
-
-        $ip = [
-            'ip' => Session::pull('ip', '127.0.0.1'),
-            'user_id' => Auth::user()->id,
-            'linenotifytoken_id' => $linenotifytoken->id
-        ];
-
-        $ip = IP::create($ip);
-
-        $response = [
-            'success' => true,
-            'message' => "成功!",
-        ];
-
-        return response()->json($response);
+        //
     }
 
     /**
@@ -55,7 +39,21 @@ class LineNotifyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $linenotify = new LineNotifyService();
+
+        $linenotifytoken = [
+            'token' => $linenotify->get_access_tooken($request->code),
+            'user_id' => Auth::user()->id
+        ];
+
+        $linenotifytoken = LineNotifyToken::create($linenotifytoken);
+
+        $response = [
+            'success' => true,
+            'message' => "成功!",
+        ];
+
+        return response()->json($response);
     }
 
     /**

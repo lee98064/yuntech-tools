@@ -43,13 +43,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function linenotifytokens()
-    {
-        return $this->hasMany('App\Models\LineNotifyToken');
-    }
+    // public function linenotifytokens()
+    // {
+    //     return $this->hasMany('App\Models\LineNotifyToken');
+    // }
 
     public function ips()
     {
         return $this->hasMany('App\Models\Ip');
+    }
+
+    public function linenotifytoken()
+    {
+        return $this->hasOne('App\Models\LineNotifyToken');
     }
 }

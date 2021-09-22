@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Session;
 
 class OverFlowNotificationController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -43,10 +48,23 @@ class OverFlowNotificationController extends Controller
      */
     public function store(Request $request)
     {
-        Session::put('ip', $request->ip);
-        $response = [
-            'success' => Session::has('ip')
+
+        $ip = [
+            'ip' => $request->ip,
+            'linenotify' => $request->linenotify,
+            'webnotify' => $request->webnotify,
+            'user_id' => Auth::user()->id,
         ];
+
+        $ip = IP::create($ip);
+
+        $ips = IP::where('user_id', Auth::user()->id)->orderByDesc('id')->get();
+
+        $response = [
+            'success' => true,
+            'ips' => $ips
+        ];
+
         return response()->json($response);
     }
 
@@ -84,18 +102,14 @@ class OverFlowNotificationController extends Controller
         $ip = auth()->user()->ips->find($id);
         $success = false;
 
-        if ($ip) {
-            $linenotifytoken = auth()->user()->linenotifytokens->find($ip->linenotifytoken_id);
-            $linenotifytoken->delete();
-            $success = $ip->delete();
-        }
-
+        $success = $ip->delete();
         $ips = IP::where('user_id', Auth::user()->id)->orderByDesc('id')->get();
 
         $response = [
             'success' => $success,
             'ips' => $ips
         ];
+
         return response()->json($response);
     }
 }
