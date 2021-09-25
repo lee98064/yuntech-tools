@@ -227,7 +227,7 @@ export default {
   methods: {
     authorize() {
       var domain = location.protocol + "//" + location.hostname;
-      var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}:8000/linenotify&scope=notify&state=overflow`;
+      var url = `https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=${process.env.MIX_LINE_NOTIFY_CLIENT_ID}&redirect_uri=${domain}/linenotify&scope=notify&state=overflow`;
       location.href = url;
     },
     unauthorize() {
