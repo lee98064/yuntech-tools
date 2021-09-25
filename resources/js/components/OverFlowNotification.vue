@@ -84,10 +84,6 @@
                       </v-btn>
                     </td>
                   </tr>
-                  <!-- <tr>
-                  <td>asdfsa</td>
-                  <td>asdsadsa</td>
-                </tr> -->
                 </tbody>
               </template>
             </v-simple-table>
@@ -104,10 +100,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="dialog = false"> 取消 </v-btn>
-          <v-btn color="green darken-1" text @click="unauthorize()">
-            刪除
+          <v-btn color="green darken-1" text @click="dialog = false">
+            取消
           </v-btn>
+          <v-btn color="red" text @click="unauthorize()"> 刪除 </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -206,22 +202,6 @@ export default {
     unauthorize_dialog(id) {
       this.dialog_info = this.ips[id];
       this.dialog = true;
-    },
-
-    unauthorize() {
-      axios
-        .delete(`/api/overflownotification/${this.dialog_info.id}`)
-        .then((response) => {
-          this.dialog = false;
-          if (response.data.success) {
-            this.ips = response.data.ips;
-            // window.open("https://notify-bot.line.me/my/", "_blank");
-          }
-        })
-        .catch(function (error) {
-          this.dialog = false;
-          console.log(error);
-        });
     },
   },
 };

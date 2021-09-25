@@ -13,7 +13,7 @@ class WebNotifyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -77,8 +77,12 @@ class WebNotifyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user = Auth::user();
+        $user->deletePushSubscription($request->endpoint);
+        return response()->json([
+            'success' =>  true
+        ], 200);
     }
 }

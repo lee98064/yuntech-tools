@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
             DB::table('ips')->update(['flow' => 0]);
         })->dailyAt('00:00');
         // $schedule->command('linenotify:ipflow')->everyThirtyMinutes();
-        $schedule->command('linenotify:ipflow')->hourlyAt(15);
-        $schedule->command('linenotify:ipflow')->hourlyAt(45);
+        $schedule->command('notify:ipflow')->hourlyAt(15);
+        $schedule->command('notify:ipflow')->hourlyAt(45);
     }
 
     /**

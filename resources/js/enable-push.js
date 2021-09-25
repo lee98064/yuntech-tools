@@ -19,7 +19,7 @@ module.exports = {
 
         axios.post('/api/webnotify', pushSubscription)
         .then((res) => {
-            // console.log(res)
+            location.reload();
         })
         .catch((err) => {
             console.log(err)
@@ -41,6 +41,29 @@ module.exports = {
             console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
             module.exports.storePushSubscription(pushSubscription);
         });
+    },
+
+    unsubscribeUser: () => {
+        navigator.serviceWorker.ready.then((registration) => {
+            registration.pushManager.getSubscription().then((subscription) => {
+                axios.delete('/api/webnotify/0', {
+                    data:{
+                        endpoint: subscription.endpoint
+                    }
+                })
+                .then((res) => {
+                    subscription.unsubscribe().then(function(successful) {
+                        location.reload();
+                    }).catch(function(e) {
+                        console.log(e)
+                    })
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
+
+            })
+        })
     },
 
     initPush: ()=>{
@@ -83,7 +106,7 @@ module.exports = {
             .then((res) => {
                 console.log('serviceWorker installed!')
                 res.update();
-                module.exports.initPush();
+                // module.exports.initPush();
             })
             .catch((err) => {
                 console.log(err)

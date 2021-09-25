@@ -18,7 +18,7 @@ class LineNotifyController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -87,6 +87,20 @@ class LineNotifyController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $token = Auth::user()->linenotifytoken;
+
+        if ($token) {
+            $success = $token->delete();
+        } else {
+            $success = false;
+        }
+
+        $response = [
+            'success' => $success,
+            'data' => Auth::user()->load('linenotifytoken')
+        ];
+
+        return response()->json($response);
     }
 }

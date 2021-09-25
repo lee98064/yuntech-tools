@@ -6,6 +6,7 @@ import Login from "./components/Auth/login";
 import Register from "./components/Auth/register";
 import LineNotify from "./components/LineNotify";
 import OverFlowNotification from "./components/OverFlowNotification";
+import User from "./components/User";
 import ExampleComponent from "./components/ExampleComponent";
 
 const guest = (to, from, next) => {
@@ -35,6 +36,12 @@ const routes = [
         component: Home,
         name: 'Home',
         beforeEnter: guest,
+    },
+    {
+        path: '/user',
+        component: User,
+        name: 'User',
+        beforeEnter: auth
     },
     {
         path: '/overflownotification',

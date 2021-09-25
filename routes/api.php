@@ -29,8 +29,10 @@ use App\Http\Controllers\API\WebNotifyController;
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('user', [UserController::class, 'getuser'])->middleware('auth:sanctum');
 
 
-Route::resource('overflownotification', OverFlowNotificationController::class);
-Route::post('linenotify', [LineNotifyController::class, 'store']);
-Route::post('webnotify', [WebNotifyController::class, 'store']);
+Route::resource('overflownotification', OverFlowNotificationController::class)->middleware('auth:sanctum');
+Route::resource('linenotify', LineNotifyController::class)->middleware('auth:sanctum');
+// Route::post('linenotify', [LineNotifyController::class, 'store']);
+Route::resource('webnotify', WebNotifyController::class)->middleware('auth:sanctum');

@@ -7,6 +7,8 @@ use App\Models\Ip;
 use App\Models\LineNotifyToken;
 use App\Services\IpFlowService;
 use App\Services\LineNotifyService;
+use App\Services\WebNotifyService;
+use Notification;
 
 class CheckIpFlow extends Command
 {
@@ -15,7 +17,7 @@ class CheckIpFlow extends Command
      *
      * @var string
      */
-    protected $signature = 'linenotify:ipflow';
+    protected $signature = 'notify:ipflow';
 
     /**
      * The console command description.
@@ -41,7 +43,7 @@ class CheckIpFlow extends Command
      */
     public function handle()
     {
-        $ips = IP::with('linenotifytoken')->get();
+        $ips = IP::with('user.linenotifytoken')->get();
         $ipflow = new IpFlowService();
         $linenotify = new LineNotifyService();
         foreach ($ips as $ip) {
@@ -61,8 +63,14 @@ class CheckIpFlow extends Command
             $ip->flow = floatval($flow);
             $ip->save();
             if (isset($message)) {
-                $message = $linenotify->text_message($message, false);
-                $linenotify->send($message, $ip->linenotifytoken->token);
+
+                if ($ip->linenotify) {
+                    $linemessage = $linenotify->text_message($message, false);
+                    $linenotify->send($linemessage, $ip->user->linenotifytoken->token);
+                }
+
+                if ($ip->webnotify)
+                    Notification::send($ip->user, new WebNotifyService("流量提醒", $message, ['開啟工具包網站', 'openHomepage']));
             }
         }
         return 0;

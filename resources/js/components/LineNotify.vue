@@ -50,14 +50,14 @@ export default {
         this.state = "授權成功!";
         this.show = false;
         setTimeout(() => {
-          this.$router.push({ name: "OverFlowNotification" });
+          this.$router.push({ name: "User" });
         }, 2000);
       })
       .catch((error) => {
         this.state = "授權失敗!";
         this.show = false;
         setTimeout(() => {
-          this.$router.push({ name: "OverFlowNotification" });
+          this.$router.push({ name: "User" });
         }, 2000);
       });
   },

@@ -1,6 +1,5 @@
 self.addEventListener('push', function (e) {
     if (!(self.Notification && self.Notification.permission === 'granted')) {
-        //notifications aren't supported or permission not granted!
         return;
     }
 
@@ -36,16 +35,16 @@ self.addEventListener('notificationclick', function(event) {
     event.notification.close();
     if (event.action === 'openHomepage') {
         clients.openWindow('/');
-    } else {
-        clients.openWindow("/reader");
+    } else if(event.action === 'openSettingpage') {
+        clients.openWindow("/user");
     }
-  }, false);
+  }, false
+);
 
+// self.notificationActions = {
 
-self.notificationActions = {
-
-    openHomepage: function (customData) {
-        clients.openWindow('http://127.0.0.1:8000');
-    //   window.open('http://127.0.0.1:8000')
-    }
-  };
+//     openHomepage: function (customData) {
+//         clients.openWindow('http://127.0.0.1:8000');
+//     //   window.open('http://127.0.0.1:8000')
+//     }
+//   };

@@ -85,4 +85,14 @@ class UserController extends Controller
         ];
         return response()->json($response);
     }
+
+
+    public function getuser()
+    {
+        $response = [
+            'success' => true,
+            'data' => Auth::user()->load('linenotifytoken'),
+        ];
+        return response()->json($response);
+    }
 }
