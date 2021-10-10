@@ -19,6 +19,9 @@ class UserController extends Controller
         try {
             $user = new User();
             $user->name = $request->name;
+            $user->nickname = $request->nickname;
+            $user->stu_id = $request->stu_id;
+            $user->sex = $request->sex;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->save();
@@ -27,7 +30,8 @@ class UserController extends Controller
             $message = 'User register successfully';
         } catch (\Illuminate\Database\QueryException $ex) {
             $success = false;
-            $message = $ex->getMessage();
+            $message = 'User register failed';
+            // $message = $ex->getMessage();
         }
 
         // response

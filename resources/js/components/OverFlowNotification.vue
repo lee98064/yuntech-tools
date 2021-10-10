@@ -8,6 +8,10 @@
         提供兩種通知方式，一種採用LINE的通知方式，另一種則是採用瀏覽器內建通知。
       </v-card-subtitle>
       <v-card-text>
+        <v-overlay :value="overlay">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+
         <v-text-field
           v-model="ip"
           label="IP"
@@ -130,6 +134,7 @@ export default {
       flower: "",
       linenotify: true,
       webnotify: true,
+      overlay: true,
     };
   },
   created() {
@@ -142,6 +147,7 @@ export default {
           this.show = true;
         }
       }
+      this.overlay = false;
     });
   },
   computed: {
@@ -185,6 +191,7 @@ export default {
         .then((response) => {
           if (response.data.success) {
             this.ips = response.data.ips;
+            this.show = true;
           }
         })
         // .then(function (response) {
@@ -202,6 +209,23 @@ export default {
     unauthorize_dialog(id) {
       this.dialog_info = this.ips[id];
       this.dialog = true;
+    },
+
+    unauthorize() {
+      this.dialog = false;
+      axios
+        .delete("/api/overflownotification/" + this.dialog_info.id)
+        .then((response) => {
+          if (response.data.success) {
+            this.ips = response.data.ips;
+            if (this.ips.length == 0) {
+              this.show = false;
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 };

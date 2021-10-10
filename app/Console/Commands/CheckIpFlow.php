@@ -49,6 +49,7 @@ class CheckIpFlow extends Command
         foreach ($ips as $ip) {
             $flow = $ipflow->GetFlow($ip->ip);
             $flowhuman = $ipflow->humanFileSize($flow);
+            unset($message);
 
             if (floatval($flow) > 10 && $ip->flow < 10) {
                 $message = "\n目前流量已超過10GB，您已被鎖卡!\nIP: {$ip->ip}\n今日使用流量: {$flowhuman}";

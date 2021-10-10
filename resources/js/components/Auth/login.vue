@@ -3,7 +3,8 @@
     <v-card class="mx-auto" max-width="500">
       <v-card-text>
         <p class="text-h4 text--primary">登入</p>
-        <p>請輸入註冊時的帳號密碼</p>
+        <p v-show="!error">請輸入註冊時的帳號密碼</p>
+        <v-alert type="error" v-show="error"> 帳號或密碼錯誤! </v-alert>
         <div class="text--primary">
           <form>
             <v-text-field
@@ -53,6 +54,7 @@ export default {
   data: () => ({
     email: "",
     password: "",
+    error: false,
   }),
 
   computed: {
@@ -91,7 +93,7 @@ export default {
               if (response.data.success) {
                 window.location.href = "/";
               } else {
-                this.error = response.data.message;
+                this.error = true;
               }
             })
             .catch(function (error) {
@@ -104,6 +106,7 @@ export default {
       this.$v.$reset();
       this.email = "";
       this.password = "";
+      this.error = false;
     },
   },
 };

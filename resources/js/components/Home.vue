@@ -1,15 +1,14 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col
-        xs="6"
-        sm="6"
-        md="6"
-        lg="3"
-        v-for="card in cards"
-        :key="card.title"
-      >
-        <v-card>
+      <v-col sm="6" md="4" lg="2" v-for="card in cards" :key="card.title">
+        <v-card :color="card.color" dark height="200px" :to="card.link">
+          <div class="app-block">
+            <i :class="card.icon" class="fa-4x mb-5 d-block text-center"></i>
+            <h2>{{ card.title }}</h2>
+          </div>
+        </v-card>
+        <!-- <v-card>
           <v-img
             :src="card.src"
             class="white--text align-end"
@@ -34,7 +33,7 @@
               <v-icon>mdi-settings</v-icon>
             </v-btn>
           </v-card-actions>
-        </v-card>
+        </v-card> -->
       </v-col>
     </v-row>
   </v-container>
@@ -47,25 +46,37 @@ export default {
     return {
       cards: [
         {
+          icon: "fas fa-wifi",
           title: "宿舍超流提醒",
-          src: "https://cdn.vuetifyjs.com/images/cards/house.jpg",
           link: "/overflownotification",
-          //   flex: 6,
+          color: "#26c6da",
         },
         {
-          title: "Favorite road trips",
-          src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
-          link: "/owerflownotification",
-          //   flex: 6,
-        },
-        {
-          title: "Best airlines",
-          src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
-          link: "/owerflownotification",
-          //   flex: 6,
+          icon: "fas fa-tools",
+          title: "待開發",
+          link: "/",
+          color: "#9D9D9D",
         },
       ],
     };
   },
 };
 </script>
+
+<style>
+.app-block {
+  height: 100%;
+  padding: 15px;
+  display: grid;
+  place-items: center;
+}
+.d-block {
+  display: block;
+}
+.m-auto {
+  margin: auto;
+}
+.text-center {
+  text-align: center;
+}
+</style>

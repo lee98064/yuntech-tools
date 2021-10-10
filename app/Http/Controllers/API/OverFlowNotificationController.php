@@ -102,7 +102,9 @@ class OverFlowNotificationController extends Controller
         $ip = auth()->user()->ips->find($id);
         $success = false;
 
-        $success = $ip->delete();
+        if ($ip) {
+            $success = $ip->delete();
+        }
         $ips = IP::where('user_id', Auth::user()->id)->orderByDesc('id')->get();
 
         $response = [
