@@ -29,6 +29,12 @@
       <!-- <v-card-title>
 
       </v-card-title> -->
+      <v-alert type="warning" v-show="error" class="mb-2">
+        {{ message }}
+      </v-alert>
+      <v-alert type="success" v-show="success" class="mb-2">
+        {{ message }}
+      </v-alert>
       <v-tabs v-model="tab" centered>
         <v-tab>基本資料</v-tab>
         <v-tab>更改密碼</v-tab>
@@ -41,23 +47,43 @@
               label="學號"
               placeholder="請輸入學號"
               autocomplete="off"
+              required
+              :error-messages="stu_idErrors"
+              v-model="userdata.stu_id"
             ></v-text-field>
             <v-text-field
               label="姓名"
               placeholder="請輸入姓名"
               autocomplete="off"
+              required
+              :error-messages="nameErrors"
               v-model="userdata.name"
+            ></v-text-field>
+            <v-text-field
+              label="暱稱"
+              placeholder="請輸入暱稱"
+              autocomplete="off"
+              required
+              :error-messages="nicknameErrors"
+              v-model="userdata.nickname"
             ></v-text-field>
             <v-text-field
               type="email"
               label="Email"
               placeholder="請輸入Email"
               autocomplete="off"
+              required
+              :error-messages="emailErrors"
               v-model="userdata.email"
             ></v-text-field>
+            <v-radio-group v-model="userdata.sex" row>
+              <v-radio label="男性" value="男"></v-radio>
+              <v-radio label="女性" value="女"></v-radio>
+              <v-radio label="其他" value="其他"></v-radio>
+            </v-radio-group>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="teal accent-4"> 儲存 </v-btn>
+            <v-btn text color="teal accent-4" @click="update()"> 儲存 </v-btn>
           </v-card-actions>
         </v-tab-item>
         <v-tab-item>
@@ -91,7 +117,9 @@
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="teal accent-4"> 變更密碼 </v-btn>
+            <v-btn text color="teal accent-4" @click="updatepd()">
+              變更密碼
+            </v-btn>
           </v-card-actions>
         </v-tab-item>
         <v-tab-item>
@@ -161,8 +189,12 @@ export default {
       newpd: { required, min: minLength(8) },
       newpd_vaild: { required },
     },
-    name: { required, maxLength: maxLength(10) },
-    email: { required, email },
+    userdata: {
+      name: { required, maxLength: maxLength(10) },
+      nickname: { required, maxLength: maxLength(30) },
+      stu_id: { required, maxLength: maxLength(15) },
+      email: { required, email },
+    },
   },
   computed: {
     oldpasswordErrors() {
@@ -187,14 +219,34 @@ export default {
       }
       return errors;
     },
-
-    // hasPermission() {
-    //   if ( === "granted") {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // },
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.userdata.name.$dirty) return errors;
+      !this.$v.userdata.name.maxLength && errors.push("姓名不可超過10字");
+      !this.$v.userdata.name.required && errors.push("請輸入姓名");
+      return errors;
+    },
+    nicknameErrors() {
+      const errors = [];
+      if (!this.$v.userdata.nickname.$dirty) return errors;
+      !this.$v.userdata.nickname.maxLength && errors.push("暱稱不可超過30字");
+      !this.$v.userdata.nickname.required && errors.push("請輸入暱稱");
+      return errors;
+    },
+    stu_idErrors() {
+      const errors = [];
+      if (!this.$v.userdata.stu_id.$dirty) return errors;
+      !this.$v.userdata.stu_id.maxLength && errors.push("學號不可超過15字");
+      !this.$v.userdata.stu_id.required && errors.push("請輸入學號");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.userdata.email.$dirty) return errors;
+      !this.$v.userdata.email.email && errors.push("請檢查E-mail格式");
+      !this.$v.userdata.email.required && errors.push("請輸入E-mail");
+      return errors;
+    },
   },
 
   data() {
@@ -207,16 +259,15 @@ export default {
         newpd_vaild: "",
       },
       notifypermission: null,
+      error: false,
+      success: false,
+      message: "",
     };
   },
   mounted() {},
 
   created() {
-    axios.get("/api/user").then((response) => {
-      if (response.data.success) {
-        this.userdata = response.data.data;
-      }
-    });
+    this.getuser();
     navigator.serviceWorker.ready.then((registration) => {
       registration.pushManager.getSubscription().then((subscription) => {
         this.notifypermission = subscription.endpoint;
@@ -244,11 +295,75 @@ export default {
         });
     },
 
+    showMessage(type, text) {
+      this.message = text;
+      if (type == "error") {
+        this.error = true;
+      } else {
+        this.success = true;
+      }
+      setTimeout(() => {
+        this.error = false;
+        this.success = false;
+      }, 3000);
+    },
+
     authorizeWebNotify() {
       WebNotify.initPush();
     },
     unauthorizeWebNotify() {
       WebNotify.unsubscribeUser();
+    },
+
+    getuser() {
+      axios.get("/api/user").then((response) => {
+        if (response.data.success) {
+          this.userdata = response.data.data;
+        }
+      });
+    },
+
+    update() {
+      this.$v.userdata.$touch();
+      if (this.$v.userdata.$invalid) {
+        return;
+      }
+      axios
+        .post("/api/user/updatedata", this.userdata)
+        .then((response) => {
+          if (response.data.success) {
+            this.getuser();
+            this.showMessage("success", "更新成功!");
+          } else {
+            this.showMessage("error", "請檢查輸入的資料!");
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    },
+
+    updatepd() {
+      this.$v.password.$touch();
+      if (
+        this.$v.password.$invalid ||
+        this.password.newpd != this.password.newpd_vaild
+      ) {
+        return;
+      }
+      axios
+        .post("/api/user/updatepd", this.password)
+        .then((response) => {
+          if (response.data.success) {
+            this.getuser();
+            this.showMessage("success", "更新成功!");
+          } else {
+            this.showMessage("error", "原密碼錯誤或其他異常!");
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
     },
   },
 };

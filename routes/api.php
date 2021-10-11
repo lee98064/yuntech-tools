@@ -29,6 +29,8 @@ use App\Http\Controllers\API\WebNotifyController;
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('user/updatedata', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::post('user/updatepd', [UserController::class, 'updatepd'])->middleware('auth:sanctum');
 Route::get('user', [UserController::class, 'getuser'])->middleware('auth:sanctum');
 
 

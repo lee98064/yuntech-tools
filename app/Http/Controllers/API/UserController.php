@@ -99,4 +99,61 @@ class UserController extends Controller
         ];
         return response()->json($response);
     }
+
+    public function update(Request $request)
+    {
+
+        try {
+            $user = User::find(Auth::id());
+            $user->name = $request->name;
+            $user->nickname = $request->nickname;
+            $user->stu_id = $request->stu_id;
+            $user->sex = $request->sex;
+            $user->email = $request->email;
+            $user->save();
+
+            $success = true;
+            $message = 'User update successfully';
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $success = false;
+            $message = 'User update failed';
+            // $message = $ex->getMessage();
+        }
+
+        // response
+        $response = [
+            'success' => $success,
+            'message' => $message,
+        ];
+
+        return response()->json($response);
+    }
+
+    public function updatepd(Request $request)
+    {
+
+        $user = User::find(Auth::id());
+
+        $message = 'Unauthorised';
+        if (Hash::check($request->oldpd, $user->password)) {
+            $success = true;
+            $user->password = Hash::make($request->newpd);
+            if ($user->save()) {
+                $message = 'User password update successfully';
+            } else {
+                $message = 'Failed';
+            }
+        } else {
+            $success = false;
+            $message = 'Failed';
+        }
+
+        // response
+        $response = [
+            'success' => $success,
+            'message' => $message,
+        ];
+
+        return response()->json($response);
+    }
 }

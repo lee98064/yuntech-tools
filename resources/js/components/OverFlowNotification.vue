@@ -138,17 +138,22 @@ export default {
     };
   },
   created() {
-    axios.get("/api/overflownotification").then((response) => {
-      if (response.data.success) {
-        this.ip = response.data.ip;
-        this.flower = response.data.flower;
-        this.ips = response.data.ips;
-        if (this.ips.length > 0) {
-          this.show = true;
+    axios
+      .get("/api/overflownotification")
+      .then((response) => {
+        if (response.data.success) {
+          this.ip = response.data.ip;
+          this.flower = response.data.flower;
+          this.ips = response.data.ips;
+          if (this.ips.length > 0) {
+            this.show = true;
+          }
         }
-      }
-      this.overlay = false;
-    });
+        this.overlay = false;
+      })
+      .catch((err) => {
+        this.overlay = false;
+      });
   },
   computed: {
     ipErrors() {
