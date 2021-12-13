@@ -6,6 +6,7 @@ import Login from "./components/Auth/login";
 import Register from "./components/Auth/register";
 import LineNotify from "./components/LineNotify";
 import OverFlowNotification from "./components/OverFlowNotification";
+import Course from "./components/Course";
 import User from "./components/User";
 import ExampleComponent from "./components/ExampleComponent";
 
@@ -30,8 +31,7 @@ const auth = (to, from, next) => {
     next();
 }
 
-const routes = [
-    {
+const routes = [{
         path: '/',
         component: Home,
         name: 'Home',
@@ -47,6 +47,12 @@ const routes = [
         path: '/overflownotification',
         component: OverFlowNotification,
         name: 'OverFlowNotification',
+        beforeEnter: auth
+    },
+    {
+        path: '/course',
+        component: Course,
+        name: 'Course',
         beforeEnter: auth
     },
     {
@@ -69,7 +75,9 @@ const routes = [
     },
     {
         path: '*',
-        redirect: { name: 'Home' },
+        redirect: {
+            name: 'Home'
+        },
         name: '404',
     }
 ];

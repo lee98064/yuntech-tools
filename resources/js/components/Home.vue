@@ -52,6 +52,12 @@ export default {
           color: "#26c6da",
         },
         {
+          icon: "fas fa-table",
+          title: "選課安排",
+          link: "/course",
+          color: "#1FD6D0",
+        },
+        {
           icon: "fas fa-tools",
           title: "待開發",
           link: "/",
