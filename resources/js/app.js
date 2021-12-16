@@ -40,15 +40,15 @@ Vue.use(Vuelidate);
  */
 
 const vuetify = new Vuetify({
-    theme: {
-        themes: {
-            light: {
-                primary: colors.green.accent2, // #E53935
-                secondary: colors.green.lighten4, // #FFCDD2
-                accent: colors.green.base, // #3F51B5
-            },
-        },
-    },
+    // theme: {
+    //     themes: {
+    //         light: {
+    //             primary: colors.green.accent2, // #E53935
+    //             secondary: colors.green.lighten4, // #FFCDD2
+    //             accent: colors.green.base, // #3F51B5
+    //         },
+    //     },
+    // },
 });
 
 const app = new Vue({

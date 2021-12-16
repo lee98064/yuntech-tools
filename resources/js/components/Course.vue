@@ -8,28 +8,28 @@
           md="4"
           sm="6"
         >
-          <v-select
-            v-model="value"
-            :items="items"
+          <v-autocomplete
+            v-model="semester"
+            :items="semesters"
             chips
-            label="學期"
-            multiple
+            label="選擇學期"
             outlined
-          ></v-select>
+          ></v-autocomplete>
         </v-col>
         <v-col
           cols="12"
           md="4"
           sm="6"
         >
-            <v-select
-            v-model="value"
-            :items="items"
-            chips
-            label="選擇教師"
-            multiple
-            outlined
-          ></v-select>
+            <v-autocomplete
+                v-model="select_teachers"
+                :items="teachers"
+                outlined
+                chips
+                label="輸入授課老師"
+                multiple
+                @change="get_courses()"
+            ></v-autocomplete>
 
         </v-col>
         <v-col
@@ -38,21 +38,65 @@
           sm="6"
         >
             <v-select
-            v-model="value"
-            :items="items"
+            v-model="select_types"
+            :items="types"
             chips
-            label="選擇院別"
+            label="選擇課程類別"
             multiple
             outlined
+            @change="get_courses()"
           ></v-select>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+          sm="6"
+        >
+            <v-autocomplete
+                v-model="select_weeks"
+                :items="weeks"
+                item-text="label"
+                item-value="value"
+                outlined
+                chips
+                label="選擇上課星期"
+                multiple
+                @change="get_courses()"
+            ></v-autocomplete>
+
         </v-col>
         <v-col cols="12">
             <v-data-table
                 :headers="headers"
-                :items="desserts"
-                :items-per-page="5"
+                :items="courses"
+                :items-per-page="10"
                 class="elevation-1"
-            ></v-data-table>
+            >
+                <template v-slot:item.point="{ item }">
+                    <v-chip
+                        :color="getColor(item.point)"
+                        dark
+                    >
+                        {{ item.point }}
+                    </v-chip>
+                </template>
+                <template v-slot:item.remarks="{ item }">
+                    <span style="white-space: pre-line">{{ item.remarks }}</span>
+                </template>
+                <template v-slot:item.actions="{ item }">
+                    <v-btn
+                        class="mx-2"
+                        fab
+                        dark
+                        x-small
+                        color="pink"
+                    >
+                        <v-icon dark>
+                            mdi-plus
+                        </v-icon>
+                    </v-btn>
+                </template>
+            </v-data-table>
         </v-col>
       </v-row>
 
@@ -61,107 +105,77 @@
 
 <script>
 export default {
+    created(){
+        axios
+        .get("/api/courses")
+        .then((response) => {
+            this.teachers = response.data.teachers;
+            this.semesters = response.data.semesters;
+            this.semester = response.data.semesters[0];
+            this.types = response.data.types;
+        })
+        .catch((err) => {
+            alert(err);
+        });
+    },
     data () {
       return {
-        items: ['foo', 'bar', 'fizz', 'buzz'],
-        value: ['foo', 'bar', 'fizz', 'buzz'],
+        teachers: [],
+        select_teachers: [],
+        semester: [],
+        semesters: [],
+        types: [],
+        select_types: [],
+        weeks: [
+            { label: '星期一', value: '1' },
+            { label: '星期二', value: '2' },
+            { label: '星期三', value: '3' },
+            { label: '星期四', value: '4' },
+            { label: '星期五', value: '5' },
+            { label: '星期六', value: '6' },
+            { label: '星期日', value: '7' },
+        ],
+        select_weeks:[],
         headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
+          { text: '課號', align:'start',sortable: true ,value: 'serial_No',},
+          { text: '課程名稱', value: 'name' },
+          { text: '開課班級', value: 'class' },
+          { text: '類型', value: 'type' },
+          { text: '修課時數', value: 'time' },
+          { text: '實習時數', value: 'practice' },
+          { text: '上課星期', value: 'week'},
+          { text: '上課時間', value: 'schedule' },
+          { text: '上課地點', value: 'location' },
+          { text: '授課教師', value: 'teacher' },
+          { text: '人數上限', value: 'max' },
+          { text: '備註', value: 'remarks' },
+          { text: '操作', value: 'actions', sortable: false },
         ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
+        courses: [],
       }
     },
+    methods: {
+        getColor (calories) {
+            if (calories > 2) return 'red'
+            else if (calories > 1) return 'orange'
+            else return 'green'
+        },
+
+        get_courses(){
+            axios
+            .post("/api/courses",{
+                teachers: this.select_teachers,
+                types: this.select_types,
+                weeks: this.select_weeks,
+            })
+            .then((response) => {
+                this.courses = response.data.courses;
+            })
+            .catch((err) => {
+                alert(err);
+            });
+        }
+    }
   }
 </script>
 

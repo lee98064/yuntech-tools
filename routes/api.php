@@ -6,6 +6,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\OverFlowNotificationController;
 use App\Http\Controllers\API\LineNotifyController;
 use App\Http\Controllers\API\WebNotifyController;
+use App\Http\Controllers\API\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +39,8 @@ Route::resource('overflownotification', OverFlowNotificationController::class)->
 Route::resource('linenotify', LineNotifyController::class)->middleware('auth:sanctum');
 // Route::post('linenotify', [LineNotifyController::class, 'store']);
 Route::resource('webnotify', WebNotifyController::class)->middleware('auth:sanctum');
+
+
+// Course
+Route::get('courses', [CourseController::class,'index'])->middleware('auth:sanctum');
+Route::post('courses', [CourseController::class,'show'])->middleware('auth:sanctum');
