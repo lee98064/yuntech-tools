@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col sm="6" md="4" lg="2" v-for="card in cards" :key="card.title">
+      <v-col cols="12" xs="6" sm="4" md="4" lg="2" v-for="card in cards" :key="card.title">
         <v-card :color="card.color" dark height="200px" :to="card.link">
           <div class="app-block">
             <i :class="card.icon" class="fa-4x mb-5 d-block text-center"></i>

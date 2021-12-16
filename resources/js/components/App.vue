@@ -3,7 +3,7 @@
     <v-app-bar app color="#fff">
       <v-toolbar-title
         ><router-link to="/"
-          ><img src="/image/logo3.png" class="mt-2" alt=""  height="50px"></router-link
+          ><img src="/image/logo.png" class="mt-2" alt=""  height="50px"></router-link
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>

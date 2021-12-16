@@ -40592,7 +40592,7 @@ var render = function() {
               _c("router-link", { attrs: { to: "/" } }, [
                 _c("img", {
                   staticClass: "mt-2",
-                  attrs: { src: "/image/logo3.png", alt: "", height: "50px" }
+                  attrs: { src: "/image/logo.png", alt: "", height: "50px" }
                 })
               ])
             ],
@@ -41569,7 +41569,10 @@ var render = function() {
         _vm._l(_vm.cards, function(card) {
           return _c(
             "v-col",
-            { key: card.title, attrs: { sm: "6", md: "4", lg: "2" } },
+            {
+              key: card.title,
+              attrs: { cols: "12", xs: "6", sm: "4", md: "4", lg: "2" }
+            },
             [
               _c(
                 "v-card",
