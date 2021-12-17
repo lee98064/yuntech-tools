@@ -16,7 +16,11 @@ window.WebNotify = require('./enable-push');
 
 window.Vue = require('vue').default;
 
-WebNotify.initSW();
+try {
+    WebNotify.initSW();
+} catch (error) {
+    console.log("通知功能無法初始化!");
+}
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

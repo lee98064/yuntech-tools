@@ -14,6 +14,7 @@
             chips
             label="選擇學期"
             outlined
+            hide-details
           ></v-autocomplete>
         </v-col>
         <v-col
@@ -28,6 +29,7 @@
                 chips
                 label="輸入授課老師"
                 multiple
+                hide-details
                 @change="get_courses()"
             ></v-autocomplete>
 
@@ -44,6 +46,7 @@
             label="選擇課程類別"
             multiple
             outlined
+            hide-details
             @change="get_courses()"
           ></v-select>
         </v-col>
@@ -61,6 +64,7 @@
                 chips
                 label="選擇上課星期"
                 multiple
+                hide-details
                 @change="get_courses()"
             ></v-autocomplete>
 
@@ -180,5 +184,7 @@ export default {
 </script>
 
 <style>
-
+.custom-text-field.v-text-field.v-text-field--enclosed .v-input__slot {
+  padding: 0;
+}
 </style>
